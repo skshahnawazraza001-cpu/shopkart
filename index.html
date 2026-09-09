@@ -1,0 +1,1740 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ShopKart — Online Shopping for Electronics, Fashion, Home & More</title>
+<meta name="description" content="Shop electronics, fashion, home essentials and more at unbeatable prices.">
+
+<!-- Open Graph / social share preview — without these, links pasted into
+     WhatsApp, Facebook, etc. show no image/title card at all. -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="ShopKart — Online Shopping for Electronics, Fashion, Home & More">
+<meta property="og:description" content="Shop electronics, fashion, home essentials and more at unbeatable prices.">
+<meta property="og:image" content="">
+<!-- ^ set this to a real 1200x630 banner image URL, or social previews will show no picture -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="ShopKart — Online Shopping for Electronics, Fashion, Home & More">
+<meta name="twitter:description" content="Shop electronics, fashion, home essentials and more at unbeatable prices.">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        fontFamily: { sans: ['Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'] },
+        colors: {
+          brand: {
+            blue: '#2874f0',
+            'blue-dark': '#1c5bc9',
+            'blue-light': '#e8f0fe',
+            yellow: '#ffe11b',
+            'yellow-dark': '#f5c400',
+          },
+        },
+        boxShadow: {
+          card: '0 1px 2px 0 rgba(0,0,0,.08), 0 1px 3px 0 rgba(0,0,0,.06)',
+          pop: '0 8px 24px rgba(0,0,0,.16)',
+        },
+      },
+    },
+  };
+</script>
+
+<style>
+  html { scroll-behavior: smooth; }
+  body { font-family: 'Inter', ui-sans-serif, system-ui, sans-serif; }
+  ::-webkit-scrollbar { height: 6px; width: 6px; }
+  ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 9999px; }
+  .scrollbar-none::-webkit-scrollbar { display: none; }
+  .scrollbar-none { -ms-overflow-style: none; scrollbar-width: none; }
+  .line-clamp-2 { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+  .modal-backdrop { background: rgba(0,0,0,.55); }
+  [data-lucide] { display: inline-block; }
+
+  @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+  .animate-slide-up { animation: slideUp .18s ease-out; }
+
+  @keyframes toastIn { from { transform: translateY(-10px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+  .animate-toast { animation: toastIn .18s ease-out; }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .animate-spin-slow { animation: spin 1s linear infinite; }
+
+  .drawer { transition: transform .28s cubic-bezier(.4,0,.2,1); }
+
+  input:focus, textarea:focus, select:focus { outline: 2px solid #2874f0; outline-offset: 1px; }
+  button:focus-visible, a:focus-visible { outline: 2px solid #2874f0; outline-offset: 2px; }
+
+  .star-fill { color: #ffffff; }
+</style>
+</head>
+<body class="bg-slate-100 text-slate-800 antialiased">
+
+<!-- ============================================================ -->
+<!-- HEADER                                                        -->
+<!-- ============================================================ -->
+<header class="sticky top-0 z-40 bg-brand-blue shadow-md">
+  <div class="max-w-7xl mx-auto px-3 sm:px-4">
+    <div class="flex items-center gap-2 sm:gap-4 py-2.5">
+      <button id="logoBtn" class="flex flex-col items-start shrink-0" aria-label="ShopKart home">
+        <span class="text-white font-extrabold text-xl sm:text-2xl tracking-tight leading-none">Shop<span class="text-brand-yellow">Kart</span></span>
+        <span class="hidden sm:flex items-center gap-1 text-[10px] text-blue-100 italic mt-0.5">
+          Explore <span class="text-brand-yellow font-semibold not-italic">Plus</span>
+          <i data-lucide="badge-check" class="w-3 h-3 text-brand-yellow"></i>
+        </span>
+      </button>
+
+      <div class="flex-1 relative hidden sm:block">
+        <input id="searchInput" type="text" placeholder="Search for products, brands and more"
+          class="w-full h-9 rounded-sm pl-4 pr-10 text-sm outline-none bg-white placeholder-slate-400 shadow-sm" />
+        <button id="searchBtnDesktop" class="absolute right-0 top-0 h-9 w-10 flex items-center justify-center text-brand-blue" aria-label="Search">
+          <i data-lucide="search" class="w-4 h-4"></i>
+        </button>
+      </div>
+
+      <div class="flex items-center gap-1 sm:gap-2 ml-auto sm:ml-0">
+        <button id="mobileSearchToggle" class="sm:hidden text-white p-2 rounded hover:bg-white/10" aria-label="Toggle search">
+          <i data-lucide="search" class="w-5 h-5"></i>
+        </button>
+
+        <button id="loginBtn" class="flex items-center gap-1.5 text-white px-2 sm:px-3 py-1.5 rounded text-sm font-medium hover:bg-white/10">
+          <i data-lucide="user-circle-2" class="w-5 h-5"></i>
+          <span class="hidden md:inline" id="loginBtnLabel">Login</span>
+        </button>
+
+        <button id="cartBtn" class="relative flex items-center gap-1.5 text-white px-2 sm:px-3 py-1.5 rounded text-sm font-medium hover:bg-white/10">
+          <i data-lucide="shopping-cart" class="w-5 h-5"></i>
+          <span class="hidden md:inline">Cart</span>
+          <span id="cartBadge" class="hidden absolute -top-1 -right-1 bg-brand-yellow text-brand-blue text-[10px] font-bold rounded-full min-w-[16px] h-4 px-1 flex items-center justify-center leading-none">0</span>
+        </button>
+      </div>
+    </div>
+
+    <div id="mobileSearchWrap" class="hidden sm:hidden pb-2.5">
+      <div class="relative">
+        <input id="searchInputMobile" type="text" placeholder="Search for products, brands and more"
+          class="w-full h-9 rounded-sm pl-4 pr-10 text-sm outline-none bg-white placeholder-slate-400" />
+        <i data-lucide="search" class="w-4 h-4 absolute right-3 top-1/2 -translate-y-1/2 text-brand-blue"></i>
+      </div>
+    </div>
+
+    <div id="categoryPills" class="flex gap-2 overflow-x-auto scrollbar-none pb-2.5 pt-1"></div>
+  </div>
+</header>
+
+<!-- ============================================================ -->
+<!-- HERO BANNER                                                   -->
+<!-- ============================================================ -->
+<div class="bg-gradient-to-r from-brand-blue via-blue-600 to-blue-500">
+  <div class="max-w-7xl mx-auto px-4 py-7 sm:py-12">
+    <h1 class="text-2xl sm:text-4xl font-extrabold text-white">Big Savings Days</h1>
+    <p class="mt-1.5 text-blue-100 text-sm sm:text-base max-w-md">Up to 80% off across Electronics, Fashion, Home &amp; Kitchen and more. Free delivery on orders above ₹499.</p>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- PRICE BUCKETS — quick-filter chips by price range             -->
+<!-- ============================================================ -->
+<div class="bg-white border-b border-slate-200">
+  <div class="max-w-7xl mx-auto px-3 sm:px-4 py-3">
+    <div id="priceBuckets" class="flex gap-2 overflow-x-auto scrollbar-none"></div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- TODAY'S DEALS — horizontally scrolling, highest-discount first -->
+<!-- ============================================================ -->
+<section id="dealsSection" class="max-w-7xl mx-auto px-3 sm:px-4 pt-5 hidden">
+  <div class="flex items-end justify-between mb-3">
+    <h2 class="text-lg sm:text-xl font-bold text-slate-800">Today's Deals</h2>
+    <span class="text-xs sm:text-sm text-slate-500">Biggest discounts right now</span>
+  </div>
+  <div id="dealsCarousel" class="flex gap-3 sm:gap-4 overflow-x-auto scrollbar-none pb-2"></div>
+</section>
+
+<!-- ============================================================ -->
+<!-- MAIN CATALOG                                                  -->
+<!-- ============================================================ -->
+<main class="max-w-7xl mx-auto px-3 sm:px-4 py-5">
+  <div class="flex items-end justify-between mb-3">
+    <h2 id="sectionTitle" class="text-lg sm:text-xl font-bold text-slate-800">All Products</h2>
+    <span id="resultCount" class="text-xs sm:text-sm text-slate-500"></span>
+  </div>
+
+  <div id="productGrid" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 sm:gap-4"></div>
+
+  <div id="emptyState" class="hidden flex-col items-center justify-center py-24 text-center">
+    <i data-lucide="package-search" class="w-16 h-16 text-slate-300 mb-3"></i>
+    <p class="text-slate-500 font-medium">No products found</p>
+    <p class="text-slate-400 text-sm mt-1">Try a different search term or category</p>
+  </div>
+</main>
+
+<!-- ============================================================ -->
+<!-- FOOTER                                                        -->
+<!-- ============================================================ -->
+<footer class="bg-slate-900 text-slate-300 mt-8">
+  <div class="max-w-7xl mx-auto px-4 py-10 grid grid-cols-2 sm:grid-cols-4 gap-6 text-sm">
+    <div>
+      <h3 class="text-slate-400 font-semibold mb-3 text-xs uppercase tracking-wide">About</h3>
+      <ul class="space-y-2">
+        <li><a href="#" class="hover:text-white">Contact Us</a></li>
+        <li><a href="#" class="hover:text-white">About ShopKart</a></li>
+        <li><a href="#" class="hover:text-white">Careers</a></li>
+      </ul>
+    </div>
+    <div>
+      <h3 class="text-slate-400 font-semibold mb-3 text-xs uppercase tracking-wide">Help</h3>
+      <ul class="space-y-2">
+        <li><a href="#" class="hover:text-white">Payments</a></li>
+        <li><a href="#" class="hover:text-white">Shipping</a></li>
+        <li><a href="#" class="hover:text-white">Returns</a></li>
+      </ul>
+    </div>
+    <div>
+      <h3 class="text-slate-400 font-semibold mb-3 text-xs uppercase tracking-wide">Policy</h3>
+      <ul class="space-y-2">
+        <li><a href="#" class="hover:text-white">Return Policy</a></li>
+        <li><a href="#" class="hover:text-white">Terms of Use</a></li>
+        <li><a href="#" class="hover:text-white">Privacy</a></li>
+      </ul>
+    </div>
+    <div>
+      <h3 class="text-slate-400 font-semibold mb-3 text-xs uppercase tracking-wide">Account</h3>
+      <ul class="space-y-2">
+        <li><button id="ordersFooterBtn" class="hover:text-white text-left">My Orders</button></li>
+        <li><button id="adminAccessBtn" class="hover:text-white text-left flex items-center gap-1"><i data-lucide="shield" class="w-3.5 h-3.5"></i>Admin</button></li>
+      </ul>
+    </div>
+  </div>
+  <div class="border-t border-slate-800 py-4 text-center text-xs text-slate-500">© <span id="year"></span> ShopKart. Built for demo purposes.</div>
+</footer>
+
+<!-- ============================================================ -->
+<!-- PRODUCT DETAILS MODAL                                         -->
+<!-- ============================================================ -->
+<div id="productModalBackdrop" class="hidden fixed inset-0 z-50 modal-backdrop flex items-end sm:items-center justify-center p-0 sm:p-4">
+  <div class="animate-slide-up bg-white w-full sm:max-w-3xl sm:rounded-lg max-h-[92vh] overflow-y-auto relative">
+    <button id="closeProductModal" class="absolute right-3 top-3 z-10 bg-white/90 rounded-full p-1.5 shadow hover:bg-slate-100" aria-label="Close">
+      <i data-lucide="x" class="w-5 h-5"></i>
+    </button>
+    <div id="productModalContent" class="grid grid-cols-1 sm:grid-cols-2"></div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- CART DRAWER                                                   -->
+<!-- ============================================================ -->
+<div id="cartBackdrop" class="hidden fixed inset-0 z-50 modal-backdrop"></div>
+<aside id="cartDrawer" class="drawer fixed top-0 right-0 z-50 h-full w-full sm:w-[420px] bg-white shadow-pop translate-x-full flex flex-col">
+  <div class="flex items-center justify-between px-4 py-3.5 border-b">
+    <h2 class="font-semibold text-slate-800 flex items-center gap-2"><i data-lucide="shopping-cart" class="w-5 h-5"></i>My Cart</h2>
+    <button id="closeCart" class="p-1.5 rounded-full hover:bg-slate-100" aria-label="Close cart"><i data-lucide="x" class="w-5 h-5"></i></button>
+  </div>
+
+  <div id="cartItemsWrap" class="flex-1 overflow-y-auto px-4 py-3 space-y-3"></div>
+
+  <div id="cartEmptyState" class="hidden flex-1 flex-col items-center justify-center text-center px-6">
+    <i data-lucide="shopping-cart" class="w-16 h-16 text-slate-200 mb-3"></i>
+    <p class="text-slate-500 font-medium">Your cart is empty</p>
+    <button id="cartEmptyShopBtn" class="mt-4 bg-brand-blue text-white text-sm font-semibold px-5 py-2 rounded">Shop Now</button>
+  </div>
+
+  <div id="cartSummary" class="border-t px-4 py-3.5 space-y-2 bg-white">
+    <div class="flex justify-between text-sm text-slate-600">
+      <span>Price (<span id="cartItemCount">0</span> items)</span>
+      <span id="cartMrpTotal">₹0</span>
+    </div>
+    <div class="flex justify-between text-sm text-slate-600">
+      <span>Discount</span>
+      <span id="cartSavings" class="text-green-600">− ₹0</span>
+    </div>
+    <div class="flex justify-between text-sm text-slate-600">
+      <span>Delivery Fee</span>
+      <span id="cartDeliveryFee">₹0</span>
+    </div>
+    <div class="flex justify-between font-bold text-slate-800 pt-2 border-t text-base">
+      <span>Total Amount</span>
+      <span id="cartTotal">₹0</span>
+    </div>
+    <button id="checkoutBtn" class="w-full mt-2 bg-brand-yellow hover:bg-brand-yellow-dark text-slate-900 font-bold py-3 rounded text-sm">Proceed to Checkout</button>
+  </div>
+</aside>
+
+<!-- ============================================================ -->
+<!-- AUTH MODAL (Phone OTP)                                        -->
+<!-- ============================================================ -->
+<div id="authModalBackdrop" class="hidden fixed inset-0 z-50 modal-backdrop flex items-center justify-center p-4">
+  <div class="animate-slide-up bg-white w-full max-w-sm rounded-lg overflow-hidden relative">
+    <button id="closeAuthModal" class="absolute right-3 top-3 p-1.5 rounded-full hover:bg-slate-100" aria-label="Close"><i data-lucide="x" class="w-5 h-5"></i></button>
+
+    <div class="bg-brand-blue px-6 pt-8 pb-10">
+      <h2 class="text-white text-xl font-bold">Login</h2>
+      <p class="text-blue-100 text-sm mt-1">Get access to your orders, wishlist and more.</p>
+    </div>
+
+    <div class="px-6 -mt-5">
+      <div class="bg-white rounded shadow-card p-4">
+
+        <!-- Step: phone entry -->
+        <div id="authStepPhone">
+          <label class="text-xs text-slate-500 font-medium">Enter your phone number</label>
+          <div class="flex items-center mt-1.5 border-b-2 border-slate-200 focus-within:border-brand-blue">
+            <span class="text-sm text-slate-600 pr-2">+91</span>
+            <input id="phoneInput" type="tel" inputmode="numeric" maxlength="10" placeholder="10-digit mobile number"
+              class="flex-1 py-2 text-sm outline-none" />
+          </div>
+          <p id="phoneError" class="hidden text-xs text-red-600 mt-1.5"></p>
+          <button id="sendOtpBtn" class="w-full mt-4 bg-brand-blue hover:bg-brand-blue-dark text-white font-semibold py-2.5 rounded text-sm flex items-center justify-center gap-2">
+            <span>Request OTP</span>
+            <i id="sendOtpSpinner" class="hidden animate-spin-slow" data-lucide="loader-2"></i>
+          </button>
+          <p id="firebaseNotice" class="hidden text-xs text-amber-700 bg-amber-50 border border-amber-200 rounded p-2 mt-3"></p>
+        </div>
+
+        <!-- Step: OTP entry -->
+        <div id="authStepOtp" class="hidden">
+          <label class="text-xs text-slate-500 font-medium">Enter the 6-digit OTP sent to <span id="otpPhoneDisplay" class="font-semibold text-slate-700"></span></label>
+          <input id="otpInput" type="text" inputmode="numeric" maxlength="6" placeholder="• • • • • •"
+            class="w-full mt-2 py-2 text-center tracking-[0.5em] text-lg border-b-2 border-slate-200 focus-within:border-brand-blue outline-none" />
+          <p id="otpError" class="hidden text-xs text-red-600 mt-1.5"></p>
+          <button id="verifyOtpBtn" class="w-full mt-4 bg-brand-blue hover:bg-brand-blue-dark text-white font-semibold py-2.5 rounded text-sm flex items-center justify-center gap-2">
+            <span>Verify &amp; Login</span>
+            <i id="verifyOtpSpinner" class="hidden animate-spin-slow" data-lucide="loader-2"></i>
+          </button>
+          <button id="changeNumberBtn" class="w-full mt-2 text-brand-blue text-xs font-medium py-1">Change phone number</button>
+        </div>
+
+      </div>
+    </div>
+    <div class="h-5"></div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- USER PROFILE MODAL                                            -->
+<!-- ============================================================ -->
+<div id="profileModalBackdrop" class="hidden fixed inset-0 z-50 modal-backdrop flex items-center justify-center p-4">
+  <div class="animate-slide-up bg-white w-full max-w-sm rounded-lg overflow-hidden max-h-[85vh] flex flex-col">
+    <div class="bg-brand-blue px-5 py-4 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center"><i data-lucide="user" class="w-5 h-5 text-white"></i></div>
+        <div>
+          <p class="text-white font-semibold text-sm" id="profilePhone">+91</p>
+          <p class="text-blue-100 text-xs">ShopKart Member</p>
+        </div>
+      </div>
+      <button id="closeProfileModal" class="text-white/80 hover:text-white p-1"><i data-lucide="x" class="w-5 h-5"></i></button>
+    </div>
+    <div class="overflow-y-auto p-4 space-y-4">
+      <div>
+        <h3 class="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-2">Order History</h3>
+        <div id="orderHistoryList" class="space-y-2"></div>
+        <p id="noOrdersMsg" class="hidden text-sm text-slate-400 text-center py-4">No orders yet</p>
+      </div>
+      <div>
+        <h3 class="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-2">Saved Address</h3>
+        <div id="savedAddressBox" class="text-sm text-slate-600 bg-slate-50 rounded p-3">No saved address yet</div>
+      </div>
+    </div>
+    <div class="p-4 border-t">
+      <button id="logoutBtn" class="w-full border border-red-200 text-red-600 font-semibold py-2.5 rounded text-sm hover:bg-red-50">Logout</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- CHECKOUT MODAL                                                -->
+<!-- ============================================================ -->
+<div id="checkoutModalBackdrop" class="hidden fixed inset-0 z-50 modal-backdrop flex items-end sm:items-center justify-center p-0 sm:p-4">
+  <div class="animate-slide-up bg-white w-full sm:max-w-lg sm:rounded-lg max-h-[95vh] overflow-y-auto relative">
+    <div class="flex items-center justify-between px-5 py-4 border-b sticky top-0 bg-white z-10">
+      <h2 class="font-bold text-slate-800 text-lg">Checkout</h2>
+      <button id="closeCheckoutModal" class="p-1.5 rounded-full hover:bg-slate-100"><i data-lucide="x" class="w-5 h-5"></i></button>
+    </div>
+
+    <!-- Step: address + payment -->
+    <div id="checkoutFormStep" class="p-5 space-y-4">
+      <div>
+        <h3 class="text-sm font-semibold text-slate-700 mb-2 flex items-center gap-1.5"><i data-lucide="map-pin" class="w-4 h-4 text-brand-blue"></i>Delivery Details</h3>
+        <div class="grid grid-cols-2 gap-3">
+          <input id="ckName" type="text" placeholder="Full Name" class="col-span-2 border border-slate-300 rounded px-3 py-2 text-sm outline-none focus:border-brand-blue" />
+          <input id="ckPhone" type="tel" maxlength="10" inputmode="numeric" placeholder="Phone Number" class="col-span-2 border border-slate-300 rounded px-3 py-2 text-sm outline-none focus:border-brand-blue" />
+          <input id="ckPincode" type="text" maxlength="6" inputmode="numeric" placeholder="Pin Code" class="border border-slate-300 rounded px-3 py-2 text-sm outline-none focus:border-brand-blue" />
+          <input id="ckCity" type="text" placeholder="City" class="border border-slate-300 rounded px-3 py-2 text-sm outline-none focus:border-brand-blue" />
+          <textarea id="ckAddress" rows="2" placeholder="Full Address (House no, Street, Landmark)" class="col-span-2 border border-slate-300 rounded px-3 py-2 text-sm outline-none focus:border-brand-blue resize-none"></textarea>
+        </div>
+        <p id="checkoutFormError" class="hidden text-xs text-red-600 mt-2"></p>
+      </div>
+
+      <div>
+        <h3 class="text-sm font-semibold text-slate-700 mb-2 flex items-center gap-1.5"><i data-lucide="wallet" class="w-4 h-4 text-brand-blue"></i>Payment Option</h3>
+        <div class="space-y-2">
+          <label class="flex items-center gap-3 border rounded p-3 cursor-pointer has-[:checked]:border-brand-blue has-[:checked]:bg-brand-blue-light">
+            <input type="radio" name="paymentMethod" value="cod" checked class="accent-brand-blue" />
+            <i data-lucide="banknote" class="w-4 h-4 text-slate-500"></i>
+            <span class="text-sm font-medium">Cash on Delivery</span>
+          </label>
+          <label class="flex items-center gap-3 border rounded p-3 cursor-pointer has-[:checked]:border-brand-blue has-[:checked]:bg-brand-blue-light">
+            <input type="radio" name="paymentMethod" value="upi" class="accent-brand-blue" />
+            <i data-lucide="smartphone" class="w-4 h-4 text-slate-500"></i>
+            <span class="text-sm font-medium">Online Payment / UPI</span>
+          </label>
+        </div>
+      </div>
+
+      <div class="bg-slate-50 rounded p-3 space-y-1 text-sm">
+        <div class="flex justify-between text-slate-600"><span>Subtotal</span><span id="ckSubtotal">₹0</span></div>
+        <div class="flex justify-between text-slate-600"><span>Delivery</span><span id="ckDelivery">₹0</span></div>
+        <div class="flex justify-between font-bold text-slate-800 pt-1 border-t"><span>Total Payable</span><span id="ckTotal">₹0</span></div>
+      </div>
+
+      <button id="placeOrderBtn" class="w-full bg-brand-yellow hover:bg-brand-yellow-dark text-slate-900 font-bold py-3 rounded text-sm flex items-center justify-center gap-2">
+        <span id="placeOrderLabel">Place Order</span>
+        <i id="placeOrderSpinner" class="hidden animate-spin-slow" data-lucide="loader-2"></i>
+      </button>
+    </div>
+
+    <!-- Step: success -->
+    <div id="checkoutSuccessStep" class="hidden p-8 text-center">
+      <div class="w-16 h-16 rounded-full bg-green-100 flex items-center justify-center mx-auto mb-4">
+        <i data-lucide="check-circle-2" class="w-9 h-9 text-green-600"></i>
+      </div>
+      <h3 class="text-lg font-bold text-slate-800">Order Placed Successfully!</h3>
+      <p class="text-sm text-slate-500 mt-1">Order ID: <span id="successOrderId" class="font-mono"></span></p>
+      <p id="upiPlaceholderNote" class="hidden text-xs text-amber-700 bg-amber-50 border border-amber-200 rounded p-2 mt-3 text-left"></p>
+      <div class="mt-5 space-y-2">
+        <a id="whatsappConfirmBtn" href="#" target="_blank" rel="noopener" class="w-full inline-flex items-center justify-center gap-2 bg-green-600 hover:bg-green-700 text-white font-semibold py-2.5 rounded text-sm">
+          <i data-lucide="message-circle" class="w-4 h-4"></i> Confirm on WhatsApp
+        </a>
+        <button id="continueShoppingBtn" class="w-full border border-slate-300 text-slate-700 font-semibold py-2.5 rounded text-sm hover:bg-slate-50">Continue Shopping</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- ADMIN PIN MODAL                                               -->
+<!-- ============================================================ -->
+<div id="adminPinModalBackdrop" class="hidden fixed inset-0 z-50 modal-backdrop flex items-center justify-center p-4">
+  <div class="animate-slide-up bg-white w-full max-w-xs rounded-lg p-5 relative">
+    <button id="closeAdminPinModal" class="absolute right-3 top-3 p-1.5 rounded-full hover:bg-slate-100"><i data-lucide="x" class="w-5 h-5"></i></button>
+    <div class="text-center mb-3">
+      <i data-lucide="shield-check" class="w-8 h-8 text-brand-blue mx-auto mb-1"></i>
+      <h2 class="font-bold text-slate-800">Admin Access</h2>
+      <p class="text-xs text-slate-500 mt-0.5">Enter PIN to manage the storefront</p>
+    </div>
+    <input id="adminPinInput" type="password" inputmode="numeric" maxlength="8" placeholder="Enter PIN"
+      class="w-full border border-slate-300 rounded px-3 py-2.5 text-center tracking-widest outline-none focus:border-brand-blue" />
+    <p id="adminPinError" class="hidden text-xs text-red-600 mt-1.5 text-center"></p>
+    <button id="adminPinSubmit" class="w-full mt-3 bg-brand-blue text-white font-semibold py-2.5 rounded text-sm">Unlock</button>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- ADMIN DASHBOARD MODAL                                         -->
+<!-- ============================================================ -->
+<div id="adminDashboardBackdrop" class="hidden fixed inset-0 z-50 modal-backdrop flex items-center justify-center p-0 sm:p-4">
+  <div class="animate-slide-up bg-white w-full sm:max-w-4xl h-full sm:h-[88vh] sm:rounded-lg flex flex-col overflow-hidden">
+    <div class="flex items-center justify-between px-5 py-3.5 border-b bg-slate-900">
+      <h2 class="font-bold text-white flex items-center gap-2"><i data-lucide="layout-dashboard" class="w-5 h-5 text-brand-yellow"></i>Admin Dashboard</h2>
+      <button id="closeAdminDashboard" class="text-white/80 hover:text-white p-1"><i data-lucide="x" class="w-5 h-5"></i></button>
+    </div>
+
+    <div class="flex-1 overflow-y-auto p-4 sm:p-5">
+      <div class="flex items-center justify-between mb-4">
+        <p class="text-sm text-slate-500"><span id="adminProductCount">0</span> products · storage: <span id="adminStorageMode" class="font-semibold"></span></p>
+        <button id="showAddProductForm" class="bg-brand-blue text-white text-sm font-semibold px-3.5 py-2 rounded flex items-center gap-1.5">
+          <i data-lucide="plus" class="w-4 h-4"></i> Add Product
+        </button>
+      </div>
+
+      <!-- Add/Edit product form -->
+      <div id="productFormWrap" class="hidden bg-slate-50 border border-slate-200 rounded-lg p-4 mb-5">
+        <div class="flex items-center justify-between mb-3">
+          <h3 id="productFormTitle" class="font-semibold text-slate-700 text-sm">Add New Product</h3>
+          <button id="cancelProductForm" class="text-slate-400 hover:text-slate-600"><i data-lucide="x" class="w-4 h-4"></i></button>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <input id="pfTitle" type="text" placeholder="Product Title" class="border border-slate-300 rounded px-3 py-2 text-sm outline-none focus:border-brand-blue sm:col-span-2" />
+          <select id="pfCategory" class="border border-slate-300 rounded px-3 py-2 text-sm outline-none focus:border-brand-blue bg-white"></select>
+          <input id="pfImage" type="url" placeholder="Image URL" class="border border-slate-300 rounded px-3 py-2 text-sm outline-none focus:border-brand-blue" />
+          <input id="pfPrice" type="number" min="0" placeholder="Current Price (₹)" class="border border-slate-300 rounded px-3 py-2 text-sm outline-none focus:border-brand-blue" />
+          <input id="pfMrp" type="number" min="0" placeholder="Original MRP (₹)" class="border border-slate-300 rounded px-3 py-2 text-sm outline-none focus:border-brand-blue" />
+          <input id="pfCostPrice" type="number" min="0" placeholder="Your Cost / Supplier Price (₹)" class="border border-slate-300 rounded px-3 py-2 text-sm outline-none focus:border-brand-blue" />
+          <input id="pfSupplierUrl" type="url" placeholder="Supplier / sourcing link (optional)" class="border border-slate-300 rounded px-3 py-2 text-sm outline-none focus:border-brand-blue" />
+          <p id="pfMarginPreview" class="text-xs text-slate-500 sm:col-span-2 -mt-1"></p>
+          <textarea id="pfDescription" rows="2" placeholder="Description" class="border border-slate-300 rounded px-3 py-2 text-sm outline-none focus:border-brand-blue sm:col-span-2 resize-none"></textarea>
+          <input id="pfSpecs" type="text" placeholder="Specs, comma-separated (e.g. Brand: Boat, Warranty: 1 Year)" class="border border-slate-300 rounded px-3 py-2 text-sm outline-none focus:border-brand-blue sm:col-span-2" />
+        </div>
+        <p id="productFormError" class="hidden text-xs text-red-600 mt-2"></p>
+        <div class="flex gap-2 mt-3">
+          <button id="saveProductBtn" class="bg-brand-blue text-white text-sm font-semibold px-4 py-2 rounded">Save Product</button>
+          <button id="deleteProductBtn" class="hidden bg-red-50 text-red-600 border border-red-200 text-sm font-semibold px-4 py-2 rounded">Delete Product</button>
+        </div>
+      </div>
+
+      <div id="adminProductList" class="space-y-2"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Toast container -->
+<div id="toastContainer" class="fixed top-16 sm:top-4 right-4 z-[60] flex flex-col gap-2 items-end"></div>
+
+<!-- Firebase Phone Auth requires an invisible reCAPTCHA container -->
+<div id="recaptcha-container"></div>
+
+<script>
+document.getElementById('year').textContent = new Date().getFullYear();
+</script>
+
+<script>
+/* ================================================================
+   SHOPKART — CONFIGURATION
+   ================================================================
+   1) Paste your Firebase project config below. Get it from:
+      Firebase Console → Project Settings → General → Your apps → SDK setup.
+      Leave apiKey as "" to run entirely on localStorage (demo mode) —
+      the storefront, cart and checkout all work fine without Firebase;
+      only phone-OTP login and cross-device product sync require it.
+   2) Enable "Phone" sign-in under Firebase Console → Authentication → Sign-in method.
+   3) Enable Firestore under Firebase Console → Firestore Database → Create database.
+   4) Recommended Firestore security rules (Console → Firestore → Rules) — this
+      is what actually protects admin writes; the in-app PIN is just a UX gate:
+
+      rules_version = '2';
+      service cloud.firestore {
+        match /databases/{database}/documents {
+          match /products/{productId} {
+            allow read: if true;
+            allow write: if request.auth != null; // any signed-in user can write.
+            // For real production, restrict writes to specific admin UIDs instead, e.g.:
+            // allow write: if request.auth != null &&
+            //   request.auth.uid in ["ADMIN_UID_1", "ADMIN_UID_2"];
+          }
+          match /orders/{orderId} {
+            allow create: if true;
+            allow read, update: if request.auth != null && request.auth.uid == resource.data.uid;
+          }
+        }
+      }
+   ================================================================ */
+const FIREBASE_CONFIG = {
+  apiKey: "",
+  authDomain: "",
+  projectId: "",
+  storageBucket: "",
+  messagingSenderId: "",
+  appId: "",
+};
+
+const ADMIN_PIN = "1234";                 // change this before deploying
+const WHATSAPP_NUMBER = "91XXXXXXXXXX";   // digits only, country code + number, no "+"
+const DELIVERY_FEE = 40;                  // ₹ flat delivery fee
+const FREE_DELIVERY_THRESHOLD = 499;      // ₹ subtotal above which delivery is free
+const UPI_ID_PLACEHOLDER = "shopkart@upi";// replace with your real UPI ID / Razorpay integration
+
+const CATEGORIES = ["All", "Electronics", "Mobiles", "Fashion", "Home & Kitchen", "Beauty & Personal Care", "Grocery", "Appliances", "Toys & Baby"];
+
+/* ================================================================
+   SEED DATA — preloaded so the storefront works before any setup
+   ================================================================ */
+const SEED_PRODUCTS = [
+  { id: "seed-1", title: "Wireless Bluetooth Earbuds with ENC Mic", category: "Electronics", price: 1299, mrp: 3999, image: "https://placehold.co/600x600/2874f0/ffffff?text=Earbuds", description: "True wireless earbuds with active noise cancellation, 20 hours total battery life and quick charge support.", specs: ["Brand: SoundPro", "Battery Life: 20 hrs", "Bluetooth: v5.3", "Warranty: 1 Year"], rating: 4.2, ratingCount: 18200 },
+  { id: "seed-2", title: "5G Smartphone 128GB, 8GB RAM", category: "Mobiles", price: 14999, mrp: 19999, image: "https://placehold.co/600x600/1c5bc9/ffffff?text=Smartphone", description: "6.5-inch FHD+ display, 50MP triple camera, 5000mAh battery with 33W fast charging.", specs: ["RAM: 8GB", "Storage: 128GB", "Display: 6.5\" FHD+", "Battery: 5000mAh"], rating: 4.1, ratingCount: 9400 },
+  { id: "seed-3", title: "Men's Cotton Casual Shirt", category: "Fashion", price: 499, mrp: 1299, image: "https://placehold.co/600x600/f5c400/1e293b?text=Men%27s+Shirt", description: "Breathable 100% cotton casual shirt, regular fit, machine washable.", specs: ["Fabric: Cotton", "Fit: Regular", "Care: Machine Wash"], rating: 3.9, ratingCount: 3100 },
+  { id: "seed-4", title: "Women's Printed Kurti Set", category: "Fashion", price: 599, mrp: 1499, image: "https://placehold.co/600x600/f472b6/ffffff?text=Kurti+Set", description: "Rayon printed kurti with matching palazzo, comfortable everyday wear.", specs: ["Fabric: Rayon", "Set: Kurti + Palazzo", "Care: Hand Wash"], rating: 4.0, ratingCount: 5600 },
+  { id: "seed-5", title: "Non-Stick Cookware Set (5 Pieces)", category: "Home & Kitchen", price: 1199, mrp: 2999, image: "https://placehold.co/600x600/16a34a/ffffff?text=Cookware+Set", description: "Induction-friendly non-stick cookware set including kadai, tawa and pots with lids.", specs: ["Pieces: 5", "Coating: Non-Stick", "Induction Compatible: Yes"], rating: 4.3, ratingCount: 7200 },
+  { id: "seed-6", title: "43-inch 4K Smart LED TV", category: "Electronics", price: 21999, mrp: 32999, image: "https://placehold.co/600x600/2874f0/ffffff?text=Smart+TV", description: "4K Ultra HD Android Smart TV with Dolby Audio and built-in Chromecast.", specs: ["Screen: 43\" 4K", "OS: Android TV", "Ports: 3xHDMI, 2xUSB"], rating: 4.4, ratingCount: 12800 },
+  { id: "seed-7", title: "Organic Face Wash Combo (Pack of 2)", category: "Beauty & Personal Care", price: 349, mrp: 699, image: "https://placehold.co/600x600/f59e0b/ffffff?text=Face+Wash", description: "Paraben-free face wash combo with aloe vera and vitamin E, suitable for all skin types.", specs: ["Pack: 2 x 100ml", "Skin Type: All", "Paraben Free: Yes"], rating: 3.8, ratingCount: 2450 },
+  { id: "seed-8", title: "Basmati Rice, 5kg Pack", category: "Grocery", price: 449, mrp: 599, image: "https://placehold.co/600x600/a16207/ffffff?text=Basmati+Rice", description: "Premium aged basmati rice, long grain, aromatic and fluffy when cooked.", specs: ["Weight: 5kg", "Type: Basmati", "Grain: Long"], rating: 4.5, ratingCount: 16700 },
+  { id: "seed-9", title: "7kg Top Load Washing Machine", category: "Appliances", price: 12999, mrp: 17999, image: "https://placehold.co/600x600/475569/ffffff?text=Washing+Machine", description: "Fully automatic top load washing machine with 6 wash programs and rust-free body.", specs: ["Capacity: 7kg", "Type: Top Load", "Warranty: 2 Years"], rating: 4.0, ratingCount: 5300 },
+  { id: "seed-10", title: "Soft Teddy Bear Plush Toy, 3ft", category: "Toys & Baby", price: 299, mrp: 799, image: "https://placehold.co/600x600/db2777/ffffff?text=Teddy+Bear", description: "Extra soft, huggable teddy bear made with skin-friendly fabric. Great gift for kids.", specs: ["Height: 3ft", "Material: Soft Plush", "Age: 2+ years"], rating: 4.3, ratingCount: 4100 },
+  { id: "seed-11", title: "Men's Running Shoes, Lightweight", category: "Fashion", price: 899, mrp: 2499, image: "https://placehold.co/600x600/dc2626/ffffff?text=Running+Shoes", description: "Breathable mesh running shoes with cushioned sole for all-day comfort.", specs: ["Upper: Mesh", "Sole: EVA Cushioned", "Closure: Lace-up"], rating: 3.9, ratingCount: 8900 },
+  { id: "seed-12", title: "Waterproof Laptop Backpack, 35L", category: "Electronics", price: 649, mrp: 1499, image: "https://placehold.co/600x600/0f172a/ffffff?text=Backpack", description: "Water-resistant backpack with dedicated 15.6-inch laptop compartment and USB charging port.", specs: ["Capacity: 35L", "Laptop: Up to 15.6\"", "USB Port: Yes"], rating: 4.1, ratingCount: 6700 },
+  { id: "seed-13", title: "Digital Air Fryer, 4L Capacity", category: "Appliances", price: 2999, mrp: 5999, image: "https://placehold.co/600x600/ea580c/ffffff?text=Air+Fryer", description: "Oil-free digital air fryer with 8 preset cooking modes and non-stick basket.", specs: ["Capacity: 4L", "Power: 1400W", "Presets: 8"], rating: 4.4, ratingCount: 3900 },
+  { id: "seed-14", title: "Smartwatch with Fitness Tracking", category: "Electronics", price: 1499, mrp: 3999, image: "https://placehold.co/600x600/2874f0/ffffff?text=Smartwatch", description: "1.8-inch HD display smartwatch with heart rate monitor, SpO2 and 100+ sports modes.", specs: ["Display: 1.8\" HD", "Battery: 7 Days", "Water Resistant: IP68"], rating: 4.0, ratingCount: 11200 },
+  { id: "seed-15", title: "Women's Structured Handbag", category: "Fashion", price: 799, mrp: 1999, image: "https://placehold.co/600x600/7c3aed/ffffff?text=Handbag", description: "Vegan leather structured handbag with adjustable strap and multiple compartments.", specs: ["Material: Vegan Leather", "Compartments: 3", "Strap: Adjustable"], rating: 4.2, ratingCount: 2900 },
+  { id: "seed-16", title: "Baby Diapers, Large, Pack of 60", category: "Toys & Baby", price: 649, mrp: 899, image: "https://placehold.co/600x600/06b6d4/ffffff?text=Diapers", description: "Ultra-soft, high-absorbency diapers with wetness indicator for babies 9-14kg.", specs: ["Size: Large (9-14kg)", "Count: 60", "Feature: Wetness Indicator"], rating: 4.5, ratingCount: 7600 },
+];
+
+/* ================================================================
+   APP STATE
+   ================================================================ */
+const state = {
+  products: [],
+  cart: JSON.parse(localStorage.getItem('sk_cart') || '[]'),
+  user: null,               // Firebase User object, or a local demo-user object
+  category: 'All',
+  searchQuery: '',
+  editingProductId: null,
+  confirmationResult: null, // Firebase phone-auth confirmation handle
+  adminUnlocked: sessionStorage.getItem('sk_admin_unlocked') === '1',
+  priceBucket: null,        // active [min,max] price filter, or null for no filter
+  deepLinkHandled: false,   // whether we've already tried opening a #product-<id> link from the URL
+};
+
+function formatINR(n) {
+  return '₹' + Math.round(n).toLocaleString('en-IN');
+}
+/* Escapes text before it goes into innerHTML. Every product field below
+   (title, description, category, specs) is admin-entered — but "admin"
+   here just means "whoever knows the PIN," and that PIN is checked
+   client-side, so a malicious product title must never be able to run
+   as HTML/JS in a visitor's browser. Wrap ANY interpolated text field
+   with this before putting it in a template string bound to innerHTML. */
+function escapeHtml(str) {
+  const div = document.createElement('div');
+  div.textContent = str == null ? '' : String(str);
+  return div.innerHTML;
+}
+function formatCount(n) {
+  if (n >= 100000) return (n / 100000).toFixed(1) + 'L';
+  if (n >= 1000) return (n / 1000).toFixed(1) + 'k';
+  return String(n);
+}
+function discountPct(price, mrp) {
+  if (!mrp || mrp <= price) return 0;
+  return Math.round(((mrp - price) / mrp) * 100);
+}
+function uid() {
+  return 'id_' + Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
+}
+function refreshIcons() {
+  if (window.lucide) lucide.createIcons();
+}
+function showToast(message, type = 'info') {
+  const wrap = document.getElementById('toastContainer');
+  const colors = { info: 'bg-slate-800', success: 'bg-green-600', error: 'bg-red-600' };
+  const el = document.createElement('div');
+  el.className = `animate-toast ${colors[type] || colors.info} text-white text-sm font-medium px-4 py-2.5 rounded shadow-lg flex items-center gap-2 max-w-xs`;
+  el.innerHTML = `<span>${message}</span>`;
+  wrap.appendChild(el);
+  setTimeout(() => { el.style.opacity = '0'; el.style.transition = 'opacity .25s'; setTimeout(() => el.remove(), 250); }, 2200);
+}
+</script>
+
+<script>
+/* ================================================================
+   FIREBASE — dynamically loaded only if FIREBASE_CONFIG.apiKey is set.
+   Using dynamic import() (not static <script type="module"> imports)
+   means the rest of the app still works over localStorage even if
+   Firebase is unconfigured or the CDN is unreachable.
+   ================================================================ */
+let fb = {}; // holds { initializeApp, getAuth, RecaptchaVerifier, ... } once loaded
+let firebaseApp = null, auth = null, db = null;
+let firestoreEnabled = false, authEnabled = false;
+let unsubscribeProducts = null;
+
+async function initFirebase() {
+  if (!FIREBASE_CONFIG.apiKey) {
+    console.info('[ShopKart] Firebase not configured — running in localStorage demo mode.');
+    return;
+  }
+  try {
+    const [appMod, authMod, fsMod] = await Promise.all([
+      import("https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js"),
+      import("https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js"),
+      import("https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js"),
+    ]);
+    fb = { ...appMod, ...authMod, ...fsMod };
+    firebaseApp = fb.initializeApp(FIREBASE_CONFIG);
+    auth = fb.getAuth(firebaseApp);
+    db = fb.getFirestore(firebaseApp);
+    firestoreEnabled = true;
+    authEnabled = true;
+
+    fb.onAuthStateChanged(auth, (user) => {
+      state.user = user;
+      onUserChanged();
+    });
+
+    subscribeToProducts();
+    console.info('[ShopKart] Firebase initialized successfully.');
+  } catch (e) {
+    console.warn('[ShopKart] Firebase failed to initialize — falling back to localStorage.', e);
+    firestoreEnabled = false;
+    authEnabled = false;
+    loadLocalProducts();
+  }
+}
+
+/* ================================================================
+   DATA LAYER — abstracts Firestore vs localStorage so the rest of
+   the app never has to know which backend is active.
+   ================================================================ */
+function seedLocalProductsIfEmpty() {
+  const existing = localStorage.getItem('sk_products');
+  if (!existing) {
+    localStorage.setItem('sk_products', JSON.stringify(SEED_PRODUCTS));
+  }
+}
+function loadLocalProducts() {
+  seedLocalProductsIfEmpty();
+  state.products = JSON.parse(localStorage.getItem('sk_products') || '[]');
+  renderProducts();
+  renderAdminProductList();
+}
+window.addEventListener('sk-products-updated', loadLocalProducts);
+
+function subscribeToProducts() {
+  if (firestoreEnabled) {
+    unsubscribeProducts = fb.onSnapshot(fb.collection(db, 'products'), async (snap) => {
+      if (snap.empty) {
+        // First run on a fresh Firestore project — seed it once.
+        for (const p of SEED_PRODUCTS) {
+          const { id, ...data } = p;
+          await fb.setDoc(fb.doc(db, 'products', id), data);
+        }
+        return; // onSnapshot will fire again with the seeded data
+      }
+      state.products = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+      renderProducts();
+      renderAdminProductList();
+    }, (err) => {
+      console.warn('[ShopKart] Firestore product subscription failed, using localStorage.', err);
+      firestoreEnabled = false;
+      loadLocalProducts();
+    });
+  } else {
+    loadLocalProducts();
+  }
+}
+
+const DataStore = {
+  async saveProduct(product) {
+    if (firestoreEnabled) {
+      if (product.id) {
+        const { id, ...data } = product;
+        await fb.setDoc(fb.doc(db, 'products', id), data, { merge: true });
+        return id;
+      } else {
+        const ref = await fb.addDoc(fb.collection(db, 'products'), product);
+        return ref.id;
+      }
+    } else {
+      let products = JSON.parse(localStorage.getItem('sk_products') || '[]');
+      if (product.id) {
+        products = products.map(p => (p.id === product.id ? product : p));
+      } else {
+        product.id = uid();
+        products.push(product);
+      }
+      localStorage.setItem('sk_products', JSON.stringify(products));
+      window.dispatchEvent(new Event('sk-products-updated'));
+      return product.id;
+    }
+  },
+
+  async deleteProduct(id) {
+    if (firestoreEnabled) {
+      await fb.deleteDoc(fb.doc(db, 'products', id));
+    } else {
+      let products = JSON.parse(localStorage.getItem('sk_products') || '[]');
+      products = products.filter(p => p.id !== id);
+      localStorage.setItem('sk_products', JSON.stringify(products));
+      window.dispatchEvent(new Event('sk-products-updated'));
+    }
+  },
+
+  async saveOrder(order) {
+    if (firestoreEnabled) {
+      const ref = await fb.addDoc(fb.collection(db, 'orders'), order);
+      return ref.id;
+    } else {
+      let orders = JSON.parse(localStorage.getItem('sk_orders') || '[]');
+      order.id = uid();
+      orders.push(order);
+      localStorage.setItem('sk_orders', JSON.stringify(orders));
+      return order.id;
+    }
+  },
+
+  async getOrdersByUser(userId) {
+    if (firestoreEnabled) {
+      try {
+        const q = fb.query(fb.collection(db, 'orders'), fb.where('uid', '==', userId));
+        const snap = await fb.getDocs(q);
+        return snap.docs.map(d => ({ id: d.id, ...d.data() })).sort((a, b) => b.createdAt - a.createdAt);
+      } catch (e) {
+        console.warn('[ShopKart] Failed to fetch orders from Firestore', e);
+        return [];
+      }
+    } else {
+      const orders = JSON.parse(localStorage.getItem('sk_orders') || '[]');
+      return orders.filter(o => o.uid === userId).sort((a, b) => b.createdAt - a.createdAt);
+    }
+  },
+
+  async saveAddress(userId, address) {
+    if (firestoreEnabled) {
+      await fb.setDoc(fb.doc(db, 'users', userId), { savedAddress: address }, { merge: true });
+    } else {
+      localStorage.setItem('sk_address_' + userId, JSON.stringify(address));
+    }
+  },
+
+  async getAddress(userId) {
+    if (firestoreEnabled) {
+      try {
+        const snap = await fb.getDocs(fb.query(fb.collection(db, 'users')));
+        const docSnap = snap.docs.find(d => d.id === userId);
+        return docSnap ? docSnap.data().savedAddress : null;
+      } catch (e) { return null; }
+    } else {
+      const raw = localStorage.getItem('sk_address_' + userId);
+      return raw ? JSON.parse(raw) : null;
+    }
+  },
+};
+</script>
+
+<script>
+/* ================================================================
+   RENDERING — category pills, product grid, product modal
+   ================================================================ */
+function renderCategoryPills() {
+  const wrap = document.getElementById('categoryPills');
+  wrap.innerHTML = CATEGORIES.map(cat => `
+    <button data-cat="${cat}" class="cat-pill shrink-0 px-3.5 py-1.5 rounded-full text-xs sm:text-sm font-medium transition
+      ${state.category === cat ? 'bg-brand-yellow text-slate-900' : 'bg-white/15 text-white hover:bg-white/25'}">
+      ${cat}
+    </button>
+  `).join('');
+  wrap.querySelectorAll('.cat-pill').forEach(btn => {
+    btn.addEventListener('click', () => {
+      state.category = btn.dataset.cat;
+      renderCategoryPills();
+      renderProducts();
+    });
+  });
+}
+
+function getFilteredProducts() {
+  return state.products.filter(p => {
+    const matchesCategory = state.category === 'All' || p.category === state.category;
+    const q = state.searchQuery.trim().toLowerCase();
+    const matchesSearch = !q || p.title.toLowerCase().includes(q) || p.category.toLowerCase().includes(q);
+    const matchesPrice = !state.priceBucket || (p.price >= state.priceBucket[0] && p.price <= state.priceBucket[1]);
+    return matchesCategory && matchesSearch && matchesPrice;
+  });
+}
+
+/* Price-bucket chips — a plain, functional price-range filter. Ranges are
+   generic; adjust PRICE_BUCKETS to whatever suits your actual catalog. */
+const PRICE_BUCKETS = [
+  { label: 'Under ₹299', range: [0, 299] },
+  { label: '₹300 – ₹599', range: [300, 599] },
+  { label: '₹600 – ₹999', range: [600, 999] },
+  { label: '₹1,000+', range: [1000, Infinity] },
+];
+
+function renderPriceBuckets() {
+  const wrap = document.getElementById('priceBuckets');
+  wrap.innerHTML = PRICE_BUCKETS.map((b, i) => {
+    const active = state.priceBucket && state.priceBucket[0] === b.range[0] && state.priceBucket[1] === b.range[1];
+    return `
+    <button data-idx="${i}" class="price-pill shrink-0 px-3.5 py-1.5 rounded-full text-xs sm:text-sm font-medium border transition
+      ${active ? 'bg-brand-blue text-white border-brand-blue' : 'bg-white text-slate-700 border-slate-300 hover:border-brand-blue'}">
+      ${b.label}
+    </button>`;
+  }).join('');
+  wrap.querySelectorAll('.price-pill').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const bucket = PRICE_BUCKETS[btn.dataset.idx].range;
+      const isActive = state.priceBucket && state.priceBucket[0] === bucket[0] && state.priceBucket[1] === bucket[1];
+      state.priceBucket = isActive ? null : bucket; // click again to clear
+      renderPriceBuckets();
+      renderProducts();
+    });
+  });
+}
+
+/* Today's Deals — computed from real inventory, sorted by actual discount.
+   No content here is hardcoded; it's whatever your own products currently are. */
+function renderDealsCarousel() {
+  const section = document.getElementById('dealsSection');
+  const track = document.getElementById('dealsCarousel');
+  const deals = [...state.products]
+    .filter(p => discountPct(p.price, p.mrp) >= 20)
+    .sort((a, b) => discountPct(b.price, b.mrp) - discountPct(a.price, a.mrp))
+    .slice(0, 12);
+
+  if (!deals.length) {
+    section.classList.add('hidden');
+    return;
+  }
+  section.classList.remove('hidden');
+  track.innerHTML = deals.map(p => `
+    <div class="deal-card shrink-0 w-36 sm:w-44 bg-white rounded-lg shadow-card hover:shadow-pop transition-shadow cursor-pointer overflow-hidden" data-id="${p.id}">
+      <div class="relative aspect-square bg-slate-50 p-2">
+        <img src="${p.image}" alt="${escapeHtml(p.title)}" loading="lazy" class="w-full h-full object-contain"
+          onerror="this.onerror=null;this.src='https://placehold.co/600x600/e2e8f0/94a3b8?text=No+Image'" />
+        <span class="absolute top-1.5 left-1.5 bg-brand-blue text-white text-[10px] font-bold px-1.5 py-0.5 rounded">${discountPct(p.price, p.mrp)}% OFF</span>
+      </div>
+      <div class="p-2">
+        <p class="text-xs text-slate-700 line-clamp-2 h-8">${escapeHtml(p.title)}</p>
+        <span class="font-bold text-slate-900 text-sm">${formatINR(p.price)}</span>
+      </div>
+    </div>`).join('');
+  track.querySelectorAll('.deal-card').forEach(card => {
+    card.addEventListener('click', () => openProductModal(card.dataset.id));
+  });
+  refreshIcons();
+}
+
+function ratingBadge(p) {
+  if (!p.rating) return '';
+  return `<span class="inline-flex items-center gap-0.5 bg-green-600 text-white text-[10px] font-bold px-1.5 py-0.5 rounded">
+    ${p.rating.toFixed(1)} <i data-lucide="star" class="w-2.5 h-2.5 fill-white"></i>
+  </span> <span class="text-[10px] text-slate-400">(${formatCount(p.ratingCount || 0)})</span>`;
+}
+
+function productCardHTML(p) {
+  const pct = discountPct(p.price, p.mrp);
+  return `
+  <div class="product-card bg-white rounded-lg shadow-card hover:shadow-pop transition-shadow cursor-pointer flex flex-col overflow-hidden" data-id="${p.id}">
+    <div class="relative aspect-square bg-slate-50 p-3">
+      <img src="${p.image}" alt="${escapeHtml(p.title)}" loading="lazy" class="w-full h-full object-contain"
+        onerror="this.onerror=null;this.src='https://placehold.co/600x600/e2e8f0/94a3b8?text=No+Image'" />
+      ${pct > 0 ? `<span class="absolute top-2 left-2 bg-brand-blue text-white text-[10px] font-bold px-1.5 py-0.5 rounded">${pct}% OFF</span>` : ''}
+    </div>
+    <div class="p-2.5 sm:p-3 flex flex-col flex-1">
+      <p class="text-xs sm:text-sm text-slate-700 line-clamp-2 flex-1">${escapeHtml(p.title)}</p>
+      <div class="mt-1.5">${ratingBadge(p)}</div>
+      <div class="mt-1 flex items-baseline gap-1.5 flex-wrap">
+        <span class="font-bold text-slate-900 text-sm sm:text-base">${formatINR(p.price)}</span>
+        ${p.mrp > p.price ? `<span class="text-xs text-slate-400 line-through">${formatINR(p.mrp)}</span>` : ''}
+        ${pct > 0 ? `<span class="text-xs text-green-600 font-medium">${pct}% off</span>` : ''}
+      </div>
+      <div class="mt-2.5 grid grid-cols-2 gap-1.5">
+        <button data-action="add" data-id="${p.id}" class="border border-brand-blue text-brand-blue text-[11px] sm:text-xs font-bold py-1.5 rounded hover:bg-brand-blue-light">ADD TO CART</button>
+        <button data-action="buy" data-id="${p.id}" class="bg-brand-yellow hover:bg-brand-yellow-dark text-slate-900 text-[11px] sm:text-xs font-bold py-1.5 rounded">BUY NOW</button>
+      </div>
+    </div>
+  </div>`;
+}
+
+function renderProducts() {
+  renderDealsCarousel();
+
+  // Open a shared product link once products have actually loaded.
+  if (!state.deepLinkHandled && location.hash.startsWith('#product-')) {
+    const targetId = location.hash.replace('#product-', '');
+    if (state.products.some(p => p.id === targetId)) {
+      state.deepLinkHandled = true;
+      openProductModal(targetId);
+    }
+  }
+
+  const grid = document.getElementById('productGrid');
+  const empty = document.getElementById('emptyState');
+  const filtered = getFilteredProducts();
+
+  document.getElementById('sectionTitle').textContent = state.category === 'All' ? 'All Products' : state.category;
+  document.getElementById('resultCount').textContent = filtered.length ? `${filtered.length} products` : '';
+
+  if (!filtered.length) {
+    grid.innerHTML = '';
+    grid.classList.add('hidden');
+    empty.classList.remove('hidden');
+    empty.classList.add('flex');
+  } else {
+    empty.classList.add('hidden');
+    empty.classList.remove('flex');
+    grid.classList.remove('hidden');
+    grid.innerHTML = filtered.map(productCardHTML).join('');
+  }
+
+  grid.querySelectorAll('.product-card').forEach(card => {
+    card.addEventListener('click', () => openProductModal(card.dataset.id));
+  });
+  grid.querySelectorAll('[data-action="add"]').forEach(btn => {
+    btn.addEventListener('click', (e) => { e.stopPropagation(); addToCart(btn.dataset.id, 1); });
+  });
+  grid.querySelectorAll('[data-action="buy"]').forEach(btn => {
+    btn.addEventListener('click', (e) => { e.stopPropagation(); buyNow(btn.dataset.id); });
+  });
+
+  refreshIcons();
+}
+
+function openProductModal(id) {
+  const p = state.products.find(x => x.id === id);
+  if (!p) return;
+  const pct = discountPct(p.price, p.mrp);
+  const specs = Array.isArray(p.specs) ? p.specs : (p.specs ? String(p.specs).split(',').map(s => s.trim()) : []);
+
+  document.getElementById('productModalContent').innerHTML = `
+    <div class="bg-slate-50 p-6 sm:p-8 flex items-center justify-center">
+      <img src="${p.image}" alt="${escapeHtml(p.title)}" class="w-full max-w-xs object-contain"
+        onerror="this.onerror=null;this.src='https://placehold.co/600x600/e2e8f0/94a3b8?text=No+Image'" />
+    </div>
+    <div class="p-5 sm:p-6 flex flex-col">
+      <span class="text-xs text-brand-blue font-semibold uppercase tracking-wide">${escapeHtml(p.category)}</span>
+      <h2 class="text-lg sm:text-xl font-bold text-slate-800 mt-1">${escapeHtml(p.title)}</h2>
+      <div class="mt-2">${ratingBadge(p)}</div>
+      <div class="mt-3 flex items-baseline gap-2 flex-wrap">
+        <span class="text-2xl font-bold text-slate-900">${formatINR(p.price)}</span>
+        ${p.mrp > p.price ? `<span class="text-sm text-slate-400 line-through">${formatINR(p.mrp)}</span>` : ''}
+        ${pct > 0 ? `<span class="text-sm text-green-600 font-semibold">${pct}% off</span>` : ''}
+      </div>
+      <p class="text-sm text-slate-600 mt-4 leading-relaxed">${escapeHtml(p.description || '')}</p>
+      ${specs.length ? `
+        <div class="mt-4">
+          <h3 class="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1.5">Specifications</h3>
+          <ul class="text-sm text-slate-600 space-y-1">
+            ${specs.map(s => `<li class="flex gap-2"><i data-lucide="check" class="w-3.5 h-3.5 text-green-600 mt-0.5 shrink-0"></i>${escapeHtml(s)}</li>`).join('')}
+          </ul>
+        </div>` : ''}
+      <div class="mt-auto pt-5 grid grid-cols-2 gap-2.5">
+        <button id="modalAddToCart" data-id="${p.id}" class="border-2 border-brand-blue text-brand-blue font-bold py-2.5 rounded text-sm">ADD TO CART</button>
+        <button id="modalBuyNow" data-id="${p.id}" class="bg-brand-yellow hover:bg-brand-yellow-dark text-slate-900 font-bold py-2.5 rounded text-sm">BUY NOW</button>
+      </div>
+    </div>
+  `;
+  document.getElementById('modalAddToCart').addEventListener('click', () => { addToCart(p.id, 1); closeModal('productModalBackdrop'); });
+  document.getElementById('modalBuyNow').addEventListener('click', () => { closeModal('productModalBackdrop'); buyNow(p.id); });
+
+  // Give this product a real, shareable, bookmarkable URL and update the
+  // tab title so a pasted link + browser back button both make sense.
+  // Note: this does NOT make social-preview cards (WhatsApp/Facebook/etc.)
+  // show per-product info — those crawlers fetch the raw HTML without
+  // running JS or reading the hash, so they'll always show the generic
+  // site-wide preview set in <head>. Real per-product previews need
+  // separate pre-rendered pages, not a hash change.
+  history.pushState({ productId: p.id }, '', `#product-${p.id}`);
+  document.title = `${p.title} — ShopKart`;
+
+  openModal('productModalBackdrop');
+  refreshIcons();
+}
+</script>
+
+<script>
+/* ================================================================
+   CART
+   ================================================================ */
+function persistCart() {
+  localStorage.setItem('sk_cart', JSON.stringify(state.cart));
+}
+
+function addToCart(productId, qty) {
+  const existing = state.cart.find(i => i.id === productId);
+  if (existing) existing.qty += qty;
+  else state.cart.push({ id: productId, qty });
+  persistCart();
+  renderCartBadge();
+  renderCartDrawer();
+  showToast('Added to cart', 'success');
+}
+
+function updateCartQty(productId, delta) {
+  const item = state.cart.find(i => i.id === productId);
+  if (!item) return;
+  item.qty += delta;
+  if (item.qty <= 0) state.cart = state.cart.filter(i => i.id !== productId);
+  persistCart();
+  renderCartBadge();
+  renderCartDrawer();
+}
+
+function removeFromCart(productId) {
+  state.cart = state.cart.filter(i => i.id !== productId);
+  persistCart();
+  renderCartBadge();
+  renderCartDrawer();
+}
+
+function buyNow(productId) {
+  addToCart(productId, 1);
+  openCheckout();
+}
+
+function cartTotals() {
+  let subtotal = 0, mrpTotal = 0, itemCount = 0;
+  state.cart.forEach(item => {
+    const p = state.products.find(x => x.id === item.id);
+    if (!p) return;
+    subtotal += p.price * item.qty;
+    mrpTotal += (p.mrp || p.price) * item.qty;
+    itemCount += item.qty;
+  });
+  const savings = mrpTotal - subtotal;
+  const deliveryFee = itemCount === 0 || subtotal >= FREE_DELIVERY_THRESHOLD ? 0 : DELIVERY_FEE;
+  const total = subtotal + deliveryFee;
+  return { subtotal, mrpTotal, savings, deliveryFee, total, itemCount };
+}
+
+function renderCartBadge() {
+  const badge = document.getElementById('cartBadge');
+  const count = state.cart.reduce((s, i) => s + i.qty, 0);
+  badge.textContent = count;
+  badge.classList.toggle('hidden', count === 0);
+}
+
+function renderCartDrawer() {
+  const wrap = document.getElementById('cartItemsWrap');
+  const emptyState = document.getElementById('cartEmptyState');
+  const summary = document.getElementById('cartSummary');
+
+  if (!state.cart.length) {
+    wrap.innerHTML = '';
+    wrap.classList.add('hidden');
+    summary.classList.add('hidden');
+    emptyState.classList.remove('hidden');
+    emptyState.classList.add('flex');
+    return;
+  }
+  emptyState.classList.add('hidden');
+  emptyState.classList.remove('flex');
+  wrap.classList.remove('hidden');
+  summary.classList.remove('hidden');
+
+  wrap.innerHTML = state.cart.map(item => {
+    const p = state.products.find(x => x.id === item.id);
+    if (!p) return '';
+    return `
+    <div class="flex gap-3 border-b pb-3">
+      <img src="${p.image}" alt="${escapeHtml(p.title)}" class="w-16 h-16 object-contain bg-slate-50 rounded shrink-0"
+        onerror="this.onerror=null;this.src='https://placehold.co/200x200/e2e8f0/94a3b8?text=No+Image'" />
+      <div class="flex-1 min-w-0">
+        <p class="text-sm text-slate-700 line-clamp-2">${escapeHtml(p.title)}</p>
+        <p class="text-sm font-bold text-slate-900 mt-1">${formatINR(p.price)}</p>
+        <div class="flex items-center justify-between mt-2">
+          <div class="flex items-center border rounded">
+            <button data-qty-action="dec" data-id="${p.id}" class="w-7 h-7 flex items-center justify-center text-slate-600 hover:bg-slate-50">−</button>
+            <span class="w-7 text-center text-sm">${item.qty}</span>
+            <button data-qty-action="inc" data-id="${p.id}" class="w-7 h-7 flex items-center justify-center text-slate-600 hover:bg-slate-50">+</button>
+          </div>
+          <button data-remove-id="${p.id}" class="text-xs text-red-500 font-medium hover:underline">Remove</button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+
+  wrap.querySelectorAll('[data-qty-action="inc"]').forEach(b => b.addEventListener('click', () => updateCartQty(b.dataset.id, 1)));
+  wrap.querySelectorAll('[data-qty-action="dec"]').forEach(b => b.addEventListener('click', () => updateCartQty(b.dataset.id, -1)));
+  wrap.querySelectorAll('[data-remove-id]').forEach(b => b.addEventListener('click', () => removeFromCart(b.dataset.removeId)));
+
+  const t = cartTotals();
+  document.getElementById('cartItemCount').textContent = t.itemCount;
+  document.getElementById('cartMrpTotal').textContent = formatINR(t.mrpTotal);
+  document.getElementById('cartSavings').textContent = '− ' + formatINR(t.savings);
+  document.getElementById('cartDeliveryFee').textContent = t.deliveryFee === 0 ? 'FREE' : formatINR(t.deliveryFee);
+  document.getElementById('cartTotal').textContent = formatINR(t.total);
+}
+</script>
+
+<script>
+/* ================================================================
+   MODAL HELPERS
+   ================================================================ */
+function openModal(id) {
+  document.getElementById(id).classList.remove('hidden');
+  document.getElementById(id).classList.add('flex');
+  document.body.style.overflow = 'hidden';
+  refreshIcons();
+}
+function closeModal(id) {
+  document.getElementById(id).classList.add('hidden');
+  document.getElementById(id).classList.remove('flex');
+  document.body.style.overflow = '';
+}
+function openCartDrawer() {
+  document.getElementById('cartBackdrop').classList.remove('hidden');
+  document.getElementById('cartDrawer').classList.remove('translate-x-full');
+  document.body.style.overflow = 'hidden';
+  renderCartDrawer();
+}
+function closeCartDrawer() {
+  document.getElementById('cartBackdrop').classList.add('hidden');
+  document.getElementById('cartDrawer').classList.add('translate-x-full');
+  document.body.style.overflow = '';
+}
+
+/* ================================================================
+   AUTH — Phone OTP via Firebase, with a demo-mode fallback so the
+   flow is still testable before Firebase credentials are added.
+   ================================================================ */
+function onUserChanged() {
+  const label = document.getElementById('loginBtnLabel');
+  if (state.user) {
+    label.textContent = state.user.phoneNumber ? state.user.phoneNumber.replace('+91', '') : 'Account';
+  } else {
+    label.textContent = 'Login';
+  }
+}
+
+function resetAuthModal() {
+  document.getElementById('authStepPhone').classList.remove('hidden');
+  document.getElementById('authStepOtp').classList.add('hidden');
+  document.getElementById('phoneInput').value = '';
+  document.getElementById('otpInput').value = '';
+  document.getElementById('phoneError').classList.add('hidden');
+  document.getElementById('otpError').classList.add('hidden');
+  const notice = document.getElementById('firebaseNotice');
+  if (!authEnabled) {
+    notice.classList.remove('hidden');
+    notice.innerHTML = `Phone OTP requires Firebase setup (see the CONFIGURATION block in the source). For now, tap <strong>Request OTP</strong> to continue in demo mode.`;
+  } else {
+    notice.classList.add('hidden');
+  }
+}
+
+async function sendOtp() {
+  const phone = document.getElementById('phoneInput').value.trim();
+  const errEl = document.getElementById('phoneError');
+  if (!/^[6-9]\d{9}$/.test(phone)) {
+    errEl.textContent = 'Enter a valid 10-digit Indian mobile number.';
+    errEl.classList.remove('hidden');
+    return;
+  }
+  errEl.classList.add('hidden');
+
+  const btn = document.getElementById('sendOtpBtn');
+  const spinner = document.getElementById('sendOtpSpinner');
+  btn.disabled = true; spinner.classList.remove('hidden');
+
+  if (!authEnabled) {
+    // Demo mode — simulate OTP send so the UI flow is fully testable.
+    setTimeout(() => {
+      btn.disabled = false; spinner.classList.add('hidden');
+      document.getElementById('otpPhoneDisplay').textContent = '+91 ' + phone;
+      document.getElementById('authStepPhone').classList.add('hidden');
+      document.getElementById('authStepOtp').classList.remove('hidden');
+      window._demoPhone = phone;
+      showToast('Demo mode: use OTP 000000', 'info');
+    }, 500);
+    return;
+  }
+
+  try {
+    if (!window._recaptchaVerifier) {
+      window._recaptchaVerifier = new fb.RecaptchaVerifier(auth, 'recaptcha-container', { size: 'invisible' });
+    }
+    const result = await fb.signInWithPhoneNumber(auth, '+91' + phone, window._recaptchaVerifier);
+    state.confirmationResult = result;
+    document.getElementById('otpPhoneDisplay').textContent = '+91 ' + phone;
+    document.getElementById('authStepPhone').classList.add('hidden');
+    document.getElementById('authStepOtp').classList.remove('hidden');
+  } catch (e) {
+    console.error(e);
+    errEl.textContent = 'Could not send OTP. Please try again.';
+    errEl.classList.remove('hidden');
+  } finally {
+    btn.disabled = false; spinner.classList.add('hidden');
+  }
+}
+
+async function verifyOtp() {
+  const otp = document.getElementById('otpInput').value.trim();
+  const errEl = document.getElementById('otpError');
+  if (otp.length !== 6) {
+    errEl.textContent = 'Enter the 6-digit OTP.';
+    errEl.classList.remove('hidden');
+    return;
+  }
+  errEl.classList.add('hidden');
+  const btn = document.getElementById('verifyOtpBtn');
+  const spinner = document.getElementById('verifyOtpSpinner');
+  btn.disabled = true; spinner.classList.remove('hidden');
+
+  if (!authEnabled) {
+    setTimeout(() => {
+      btn.disabled = false; spinner.classList.add('hidden');
+      if (otp !== '000000') {
+        errEl.textContent = 'Invalid OTP. Use 000000 in demo mode.';
+        errEl.classList.remove('hidden');
+        return;
+      }
+      state.user = { uid: 'demo_' + window._demoPhone, phoneNumber: '+91' + window._demoPhone, isDemo: true };
+      onUserChanged();
+      closeModal('authModalBackdrop');
+      showToast('Logged in successfully', 'success');
+    }, 500);
+    return;
+  }
+
+  try {
+    const result = await state.confirmationResult.confirm(otp);
+    state.user = result.user;
+    onUserChanged();
+    closeModal('authModalBackdrop');
+    showToast('Logged in successfully', 'success');
+  } catch (e) {
+    console.error(e);
+    errEl.textContent = 'Invalid OTP. Please try again.';
+    errEl.classList.remove('hidden');
+  } finally {
+    btn.disabled = false; spinner.classList.add('hidden');
+  }
+}
+
+async function logout() {
+  if (authEnabled && auth) {
+    try { await fb.signOut(auth); } catch (e) { console.warn(e); }
+  }
+  state.user = null;
+  onUserChanged();
+  closeModal('profileModalBackdrop');
+  showToast('Logged out', 'info');
+}
+
+async function openProfileModal() {
+  if (!state.user) { resetAuthModal(); openModal('authModalBackdrop'); return; }
+
+  document.getElementById('profilePhone').textContent = state.user.phoneNumber || 'ShopKart User';
+
+  const orders = await DataStore.getOrdersByUser(state.user.uid);
+  const listEl = document.getElementById('orderHistoryList');
+  const noOrders = document.getElementById('noOrdersMsg');
+  if (!orders.length) {
+    listEl.innerHTML = '';
+    noOrders.classList.remove('hidden');
+  } else {
+    noOrders.classList.add('hidden');
+    listEl.innerHTML = orders.map(o => `
+      <div class="border rounded p-2.5 text-sm">
+        <div class="flex justify-between">
+          <span class="font-medium text-slate-700">Order #${(o.id || '').toString().slice(-6)}</span>
+          <span class="text-green-600 text-xs font-semibold">${o.status || 'Placed'}</span>
+        </div>
+        <p class="text-xs text-slate-500 mt-0.5">${(o.items || []).length} item(s) · ${formatINR(o.total || 0)}</p>
+        <p class="text-xs text-slate-400 mt-0.5">${new Date(o.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}</p>
+      </div>
+    `).join('');
+  }
+
+  const address = await DataStore.getAddress(state.user.uid);
+  const addrBox = document.getElementById('savedAddressBox');
+  addrBox.textContent = address ? `${address.name}, ${address.address}, ${address.city} - ${address.pincode} · ${address.phone}` : 'No saved address yet';
+
+  openModal('profileModalBackdrop');
+}
+</script>
+
+<script>
+/* ================================================================
+   CHECKOUT
+   ================================================================ */
+async function openCheckout() {
+  if (!state.cart.length) { showToast('Your cart is empty', 'error'); return; }
+  closeCartDrawer();
+
+  document.getElementById('checkoutFormStep').classList.remove('hidden');
+  document.getElementById('checkoutSuccessStep').classList.add('hidden');
+  document.getElementById('checkoutFormError').classList.add('hidden');
+
+  // Prefill from saved address / logged-in user
+  if (state.user) {
+    const addr = await DataStore.getAddress(state.user.uid);
+    if (addr) {
+      document.getElementById('ckName').value = addr.name || '';
+      document.getElementById('ckPhone').value = addr.phone || '';
+      document.getElementById('ckPincode').value = addr.pincode || '';
+      document.getElementById('ckCity').value = addr.city || '';
+      document.getElementById('ckAddress').value = addr.address || '';
+    } else if (state.user.phoneNumber) {
+      document.getElementById('ckPhone').value = state.user.phoneNumber.replace('+91', '');
+    }
+  }
+
+  const t = cartTotals();
+  document.getElementById('ckSubtotal').textContent = formatINR(t.subtotal);
+  document.getElementById('ckDelivery').textContent = t.deliveryFee === 0 ? 'FREE' : formatINR(t.deliveryFee);
+  document.getElementById('ckTotal').textContent = formatINR(t.total);
+
+  openModal('checkoutModalBackdrop');
+}
+
+async function placeOrder() {
+  const name = document.getElementById('ckName').value.trim();
+  const phone = document.getElementById('ckPhone').value.trim();
+  const pincode = document.getElementById('ckPincode').value.trim();
+  const city = document.getElementById('ckCity').value.trim();
+  const address = document.getElementById('ckAddress').value.trim();
+  const paymentMethod = document.querySelector('input[name="paymentMethod"]:checked').value;
+  const errEl = document.getElementById('checkoutFormError');
+
+  if (!name || !/^\d{10}$/.test(phone) || !/^\d{6}$/.test(pincode) || !city || !address) {
+    errEl.textContent = 'Please fill in all fields correctly (10-digit phone, 6-digit pincode).';
+    errEl.classList.remove('hidden');
+    return;
+  }
+  errEl.classList.add('hidden');
+
+  const btn = document.getElementById('placeOrderBtn');
+  const label = document.getElementById('placeOrderLabel');
+  const spinner = document.getElementById('placeOrderSpinner');
+  btn.disabled = true; spinner.classList.remove('hidden'); label.textContent = 'Placing Order...';
+
+  const t = cartTotals();
+  const items = state.cart.map(item => {
+    const p = state.products.find(x => x.id === item.id);
+    return { id: item.id, title: p ? p.title : 'Unknown item', price: p ? p.price : 0, qty: item.qty, image: p ? p.image : '' };
+  });
+
+  const order = {
+    items, subtotal: t.subtotal, savings: t.savings, deliveryFee: t.deliveryFee, total: t.total,
+    customer: { name, phone, pincode, city, address },
+    paymentMethod, status: 'Placed', createdAt: Date.now(),
+    uid: state.user ? state.user.uid : null,
+  };
+
+  let orderId;
+  try {
+    orderId = await DataStore.saveOrder(order);
+  } catch (e) {
+    console.error(e);
+    showToast('Could not place order. Please try again.', 'error');
+    btn.disabled = false; spinner.classList.add('hidden'); label.textContent = 'Place Order';
+    return;
+  }
+
+  if (state.user) {
+    DataStore.saveAddress(state.user.uid, { name, phone, pincode, city, address }).catch(() => {});
+  }
+
+  // Reset UI
+  btn.disabled = false; spinner.classList.add('hidden'); label.textContent = 'Place Order';
+  state.cart = [];
+  persistCart();
+  renderCartBadge();
+
+  document.getElementById('successOrderId').textContent = '#' + orderId.toString().slice(-8).toUpperCase();
+
+  const upiNote = document.getElementById('upiPlaceholderNote');
+  if (paymentMethod === 'upi') {
+    upiNote.classList.remove('hidden');
+    upiNote.innerHTML = `This demo generates a UPI payment link (<code>upi://pay?pa=${UPI_ID_PLACEHOLDER}&am=${t.total}</code>) rather than charging a real account. To accept real payments, integrate Razorpay Checkout — see the commented skeleton near the top of the script.`;
+  } else {
+    upiNote.classList.add('hidden');
+  }
+
+  const waMessage = `Hi ShopKart! I've placed order ${orderId.toString().slice(-8).toUpperCase()} for ${formatINR(t.total)} (${items.length} item(s)), payment: ${paymentMethod.toUpperCase()}. Delivery to: ${address}, ${city} - ${pincode}.`;
+  document.getElementById('whatsappConfirmBtn').href = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(waMessage)}`;
+
+  document.getElementById('checkoutFormStep').classList.add('hidden');
+  document.getElementById('checkoutSuccessStep').classList.remove('hidden');
+}
+
+/* --------------------------------------------------------------
+   RAZORPAY INTEGRATION SKELETON (commented out — for real payments)
+   --------------------------------------------------------------
+   1. Add the Razorpay checkout script via a normal script tag in
+      your HTML head: src is "https://checkout.razorpay.com/v1/checkout.js"
+      (written as plain text here on purpose — a literal closing
+      script tag inside this comment would end this script block
+      early and break everything after it on the page).
+   2. Create an order server-side (Razorpay requires a backend/Cloud
+      Function call using your KEY_SECRET — never expose the secret
+      client-side) and get back an `order_id`.
+   3. Then, instead of the UPI-link placeholder above:
+
+      const options = {
+        key: "YOUR_RAZORPAY_KEY_ID",
+        amount: t.total * 100, // paise
+        currency: "INR",
+        name: "ShopKart",
+        order_id: serverGeneratedOrderId,
+        handler: function (response) {
+          // response.razorpay_payment_id, razorpay_order_id, razorpay_signature
+          // verify the signature server-side before marking the order paid
+        },
+        prefill: { name, contact: phone },
+        theme: { color: "#2874f0" },
+      };
+      const rzp = new Razorpay(options);
+      rzp.open();
+   ------------------------------------------------------------------ */
+</script>
+
+<script>
+/* ================================================================
+   ADMIN DASHBOARD
+   ================================================================ */
+function verifyAdminPin() {
+  const val = document.getElementById('adminPinInput').value.trim();
+  const errEl = document.getElementById('adminPinError');
+  if (val !== ADMIN_PIN) {
+    errEl.textContent = 'Incorrect PIN. Please try again.';
+    errEl.classList.remove('hidden');
+    return;
+  }
+  errEl.classList.add('hidden');
+  state.adminUnlocked = true;
+  sessionStorage.setItem('sk_admin_unlocked', '1');
+  document.getElementById('adminPinInput').value = '';
+  closeModal('adminPinModalBackdrop');
+  openAdminDashboard();
+}
+
+function openAdminDashboard() {
+  document.getElementById('adminStorageMode').textContent = firestoreEnabled ? 'Firestore (live sync)' : 'localStorage (this browser only)';
+  hideProductForm();
+  renderAdminProductList();
+  openModal('adminDashboardBackdrop');
+}
+
+function renderAdminProductList() {
+  const listEl = document.getElementById('adminProductList');
+  if (!listEl) return; // not yet rendered
+  document.getElementById('adminProductCount').textContent = state.products.length;
+  listEl.innerHTML = state.products.map(p => {
+    const hasCost = p.costPrice > 0;
+    const margin = hasCost ? p.price - p.costPrice : null;
+    const marginPct = hasCost && p.price > 0 ? Math.round((margin / p.price) * 100) : null;
+    return `
+    <div class="flex items-center gap-3 border rounded p-2.5 hover:bg-slate-50 cursor-pointer" data-edit-id="${p.id}">
+      <img src="${p.image}" class="w-12 h-12 object-contain bg-slate-50 rounded shrink-0" onerror="this.onerror=null;this.src='https://placehold.co/100x100/e2e8f0/94a3b8?text=—'" />
+      <div class="flex-1 min-w-0">
+        <p class="text-sm text-slate-700 truncate">${escapeHtml(p.title)}</p>
+        <p class="text-xs text-slate-500">${escapeHtml(p.category)} · ${formatINR(p.price)} <span class="line-through text-slate-300">${formatINR(p.mrp)}</span></p>
+        ${hasCost ? `<p class="text-xs ${margin > 0 ? 'text-green-600' : 'text-red-600 font-medium'} mt-0.5">Margin: ${formatINR(margin)} (${marginPct}%)</p>` : ''}
+      </div>
+      <i data-lucide="pencil" class="w-4 h-4 text-slate-400 shrink-0"></i>
+    </div>`;
+  }).join('');
+  listEl.querySelectorAll('[data-edit-id]').forEach(el => {
+    el.addEventListener('click', () => showProductForm(el.dataset.editId));
+  });
+  refreshIcons();
+}
+
+function populateCategorySelect() {
+  const sel = document.getElementById('pfCategory');
+  sel.innerHTML = CATEGORIES.filter(c => c !== 'All').map(c => `<option value="${c}">${c}</option>`).join('');
+}
+
+function showProductForm(editId) {
+  populateCategorySelect();
+  document.getElementById('productFormWrap').classList.remove('hidden');
+  document.getElementById('productFormError').classList.add('hidden');
+  const deleteBtn = document.getElementById('deleteProductBtn');
+
+  if (editId) {
+    const p = state.products.find(x => x.id === editId);
+    if (!p) return;
+    state.editingProductId = editId;
+    document.getElementById('productFormTitle').textContent = 'Edit Product';
+    document.getElementById('pfTitle').value = p.title;
+    document.getElementById('pfCategory').value = p.category;
+    document.getElementById('pfImage').value = p.image;
+    document.getElementById('pfPrice').value = p.price;
+    document.getElementById('pfMrp').value = p.mrp;
+    document.getElementById('pfCostPrice').value = p.costPrice || '';
+    document.getElementById('pfSupplierUrl').value = p.supplierUrl || '';
+    document.getElementById('pfDescription').value = p.description || '';
+    document.getElementById('pfSpecs').value = Array.isArray(p.specs) ? p.specs.join(', ') : (p.specs || '');
+    deleteBtn.classList.remove('hidden');
+    updateMarginPreview();
+  } else {
+    state.editingProductId = null;
+    document.getElementById('productFormTitle').textContent = 'Add New Product';
+    ['pfTitle', 'pfImage', 'pfPrice', 'pfMrp', 'pfCostPrice', 'pfSupplierUrl', 'pfDescription', 'pfSpecs'].forEach(id => document.getElementById(id).value = '');
+    document.getElementById('pfCategory').selectedIndex = 0;
+    document.getElementById('pfMarginPreview').textContent = '';
+    deleteBtn.classList.add('hidden');
+  }
+  document.getElementById('productFormWrap').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+function hideProductForm() {
+  document.getElementById('productFormWrap').classList.add('hidden');
+  state.editingProductId = null;
+}
+
+function updateMarginPreview() {
+  const price = parseFloat(document.getElementById('pfPrice').value);
+  const cost = parseFloat(document.getElementById('pfCostPrice').value);
+  const el = document.getElementById('pfMarginPreview');
+  if (isNaN(price) || isNaN(cost) || cost <= 0) {
+    el.textContent = '';
+    return;
+  }
+  const margin = price - cost;
+  const marginPct = price > 0 ? Math.round((margin / price) * 100) : 0;
+  el.textContent = `Margin: ₹${margin.toFixed(0)} per unit (${marginPct}% of sale price)`;
+  el.className = 'text-xs sm:col-span-2 -mt-1 ' + (margin > 0 ? 'text-green-600' : 'text-red-600 font-medium');
+}
+
+async function saveProductFromForm() {
+  const title = document.getElementById('pfTitle').value.trim();
+  const category = document.getElementById('pfCategory').value;
+  const image = document.getElementById('pfImage').value.trim();
+  const price = parseFloat(document.getElementById('pfPrice').value);
+  const mrp = parseFloat(document.getElementById('pfMrp').value);
+  const costPrice = parseFloat(document.getElementById('pfCostPrice').value) || 0;
+  const supplierUrl = document.getElementById('pfSupplierUrl').value.trim();
+  const description = document.getElementById('pfDescription').value.trim();
+  const specsRaw = document.getElementById('pfSpecs').value.trim();
+  const specs = specsRaw ? specsRaw.split(',').map(s => s.trim()).filter(Boolean) : [];
+  const errEl = document.getElementById('productFormError');
+
+  if (!title || !image || isNaN(price) || price <= 0 || isNaN(mrp) || mrp <= 0) {
+    errEl.textContent = 'Please fill in title, image URL, price and MRP with valid values.';
+    errEl.classList.remove('hidden');
+    return;
+  }
+  errEl.classList.add('hidden');
+
+  const product = {
+    id: state.editingProductId || undefined,
+    title, category, image, price, mrp, costPrice, supplierUrl, description, specs,
+    rating: state.editingProductId ? (state.products.find(p => p.id === state.editingProductId)?.rating || 4.0) : 4.0,
+    ratingCount: state.editingProductId ? (state.products.find(p => p.id === state.editingProductId)?.ratingCount || 0) : 0,
+  };
+
+  try {
+    await DataStore.saveProduct(product);
+    showToast(state.editingProductId ? 'Product updated' : 'Product added', 'success');
+    hideProductForm();
+    if (!firestoreEnabled) { loadLocalProducts(); }
+  } catch (e) {
+    console.error(e);
+    errEl.textContent = 'Failed to save product. Please try again.';
+    errEl.classList.remove('hidden');
+  }
+}
+
+async function deleteProductFromForm() {
+  if (!state.editingProductId) return;
+  if (!confirm('Delete this product permanently?')) return;
+  try {
+    await DataStore.deleteProduct(state.editingProductId);
+    showToast('Product deleted', 'success');
+    hideProductForm();
+    if (!firestoreEnabled) { loadLocalProducts(); }
+  } catch (e) {
+    console.error(e);
+    showToast('Failed to delete product', 'error');
+  }
+}
+</script>
+
+<script>
+/* ================================================================
+   EVENT WIRING & INIT
+   ================================================================ */
+document.addEventListener('DOMContentLoaded', () => {
+  refreshIcons();
+  renderCategoryPills();
+  renderPriceBuckets();
+  renderCartBadge();
+
+  // Search (desktop + mobile kept in sync)
+  const searchDesktop = document.getElementById('searchInput');
+  const searchMobile = document.getElementById('searchInputMobile');
+  function onSearchInput(e) {
+    state.searchQuery = e.target.value;
+    if (e.target === searchDesktop) searchMobile.value = e.target.value;
+    else searchDesktop.value = e.target.value;
+    renderProducts();
+  }
+  searchDesktop.addEventListener('input', onSearchInput);
+  searchMobile.addEventListener('input', onSearchInput);
+  document.getElementById('mobileSearchToggle').addEventListener('click', () => {
+    document.getElementById('mobileSearchWrap').classList.toggle('hidden');
+    searchMobile.focus();
+  });
+
+  document.getElementById('logoBtn').addEventListener('click', () => {
+    state.category = 'All'; state.searchQuery = '';
+    searchDesktop.value = ''; searchMobile.value = '';
+    renderCategoryPills(); renderProducts();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+
+  // Product modal
+  document.getElementById('closeProductModal').addEventListener('click', () => {
+    closeModal('productModalBackdrop');
+    document.title = 'ShopKart — Online Shopping for Electronics, Fashion, Home & More';
+    if (location.hash.startsWith('#product-')) history.pushState({}, '', location.pathname + location.search);
+  });
+  document.getElementById('productModalBackdrop').addEventListener('click', (e) => { if (e.target.id === 'productModalBackdrop') closeModal('productModalBackdrop'); });
+
+  // Cart drawer
+  document.getElementById('cartBtn').addEventListener('click', openCartDrawer);
+  document.getElementById('closeCart').addEventListener('click', closeCartDrawer);
+  document.getElementById('cartBackdrop').addEventListener('click', closeCartDrawer);
+  document.getElementById('cartEmptyShopBtn').addEventListener('click', closeCartDrawer);
+  document.getElementById('checkoutBtn').addEventListener('click', openCheckout);
+
+  // Auth
+  document.getElementById('loginBtn').addEventListener('click', () => {
+    if (state.user) openProfileModal();
+    else { resetAuthModal(); openModal('authModalBackdrop'); }
+  });
+  document.getElementById('closeAuthModal').addEventListener('click', () => closeModal('authModalBackdrop'));
+  document.getElementById('authModalBackdrop').addEventListener('click', (e) => { if (e.target.id === 'authModalBackdrop') closeModal('authModalBackdrop'); });
+  document.getElementById('sendOtpBtn').addEventListener('click', sendOtp);
+  document.getElementById('verifyOtpBtn').addEventListener('click', verifyOtp);
+  document.getElementById('changeNumberBtn').addEventListener('click', resetAuthModal);
+  document.getElementById('phoneInput').addEventListener('keydown', (e) => { if (e.key === 'Enter') sendOtp(); });
+  document.getElementById('otpInput').addEventListener('keydown', (e) => { if (e.key === 'Enter') verifyOtp(); });
+
+  // Profile
+  document.getElementById('closeProfileModal').addEventListener('click', () => closeModal('profileModalBackdrop'));
+  document.getElementById('profileModalBackdrop').addEventListener('click', (e) => { if (e.target.id === 'profileModalBackdrop') closeModal('profileModalBackdrop'); });
+  document.getElementById('logoutBtn').addEventListener('click', logout);
+  document.getElementById('ordersFooterBtn').addEventListener('click', openProfileModal);
+
+  // Checkout
+  document.getElementById('closeCheckoutModal').addEventListener('click', () => closeModal('checkoutModalBackdrop'));
+  document.getElementById('checkoutModalBackdrop').addEventListener('click', (e) => { if (e.target.id === 'checkoutModalBackdrop') closeModal('checkoutModalBackdrop'); });
+  document.getElementById('placeOrderBtn').addEventListener('click', placeOrder);
+  document.getElementById('continueShoppingBtn').addEventListener('click', () => { closeModal('checkoutModalBackdrop'); renderProducts(); });
+
+  // Admin
+  document.getElementById('adminAccessBtn').addEventListener('click', () => {
+    if (state.adminUnlocked) openAdminDashboard();
+    else { document.getElementById('adminPinError').classList.add('hidden'); openModal('adminPinModalBackdrop'); }
+  });
+  document.getElementById('closeAdminPinModal').addEventListener('click', () => closeModal('adminPinModalBackdrop'));
+  document.getElementById('adminPinModalBackdrop').addEventListener('click', (e) => { if (e.target.id === 'adminPinModalBackdrop') closeModal('adminPinModalBackdrop'); });
+  document.getElementById('adminPinSubmit').addEventListener('click', verifyAdminPin);
+  document.getElementById('adminPinInput').addEventListener('keydown', (e) => { if (e.key === 'Enter') verifyAdminPin(); });
+  document.getElementById('closeAdminDashboard').addEventListener('click', () => closeModal('adminDashboardBackdrop'));
+  document.getElementById('showAddProductForm').addEventListener('click', () => showProductForm(null));
+  document.getElementById('cancelProductForm').addEventListener('click', hideProductForm);
+  document.getElementById('saveProductBtn').addEventListener('click', saveProductFromForm);
+  ['pfPrice', 'pfCostPrice'].forEach(id => {
+    document.getElementById(id).addEventListener('input', updateMarginPreview);
+  });
+  document.getElementById('deleteProductBtn').addEventListener('click', deleteProductFromForm);
+
+  // Escape key closes any open modal/drawer
+  document.addEventListener('keydown', (e) => {
+    if (e.key !== 'Escape') return;
+    ['productModalBackdrop', 'authModalBackdrop', 'profileModalBackdrop', 'checkoutModalBackdrop', 'adminPinModalBackdrop', 'adminDashboardBackdrop'].forEach(id => {
+      if (!document.getElementById(id).classList.contains('hidden')) closeModal(id);
+    });
+    if (!document.getElementById('cartBackdrop').classList.contains('hidden')) closeCartDrawer();
+  });
+
+  // Boot: try Firebase, otherwise load localStorage immediately
+  initFirebase().then(() => {
+    if (!firestoreEnabled) loadLocalProducts();
+  });
+
+  // Back button on a product deep link should close the modal, not leave
+  // it open over a URL that no longer matches what's showing.
+  window.addEventListener('popstate', () => {
+    if (!location.hash.startsWith('#product-') && !document.getElementById('productModalBackdrop').classList.contains('hidden')) {
+      closeModal('productModalBackdrop');
+      document.title = 'ShopKart — Online Shopping for Electronics, Fashion, Home & More';
+    }
+  });
+});
+</script>
+</body>
+</html>
